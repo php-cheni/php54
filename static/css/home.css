@@ -1,0 +1,115 @@
+@charset "UTF-8";
+/* latin */
+@font-face {
+    font-family: 'Monoton';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Monoton'), local('Monoton-Regular'), url(../fonts/Monoton.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+    font-family: 'Offside';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Offside'), local('Offside-Regular'), url(../fonts/Offside.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+::-webkit-scrollbar{
+  width: 0; 
+}
+body{
+    background-color: #f6f6f6;
+    font-family: Offside,cursive;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+header{
+    width: 100%;
+    height: 50px;
+    overflow-x: scroll; 
+    overflow-y: hidden; 
+    background-color: white;
+}
+header>span{
+    float: right;
+    font-size: 24px;
+    width: auto;
+    padding: 0 20px;
+    text-align: center;
+    line-height: 50px;
+    font-weight: bold;
+}
+header>ul>a{
+    color: cornflowerblue;
+    text-decoration: none;
+}
+header>ul>li{
+    /* position: relative; */
+    list-style: none;
+    width: auto;
+    height: 50px;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 50px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0 20px;
+    transition: all .5s ease;
+    -webkit-transition: all .5s ease;
+}
+header ul li:last-child{
+    list-style: none;
+    float: right;
+    font-size: 24px;
+    width: auto;
+    padding: 0 20px;
+    text-align: center;
+    line-height: 50px;
+    font-weight: bold;
+}
+header>ul>li:hover{
+    color: pink;
+}
+header>ul>li:hover .detail{
+    height: 300px;
+}
+/* header>ul>li::before{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 50%;
+    opacity: .5;
+    transition: all .5s ease;
+    -webkit-transition: all .5s ease;
+    background-color: pink;
+}
+header>ul>li:hover:before{
+    width: 100%;
+} */
+.detail{
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 100%;
+    height: 0;
+    padding-left: 20px;
+    overflow-y: scroll;
+    background-color: black;
+    transition: all .5s ease;
+    -webkit-transition: all .5s ease;
+    box-sizing: border-box;
+}
+.detail ul li{
+    list-style: none;
+    text-align: left;
+    color: white;
+}
