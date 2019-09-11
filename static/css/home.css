@@ -232,6 +232,7 @@ header span:hover .detail{
     animation-fill-mode: both;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
+
 .shape::after {
     content: '';
     position: absolute;
@@ -259,7 +260,7 @@ header span:hover .detail{
 
 .rectangle {
     bottom: 0;
-    left: 50%;
+    left: 60%;
     background: linear-gradient(45deg, #EA9F45 0%, #F4EE51 100%);
     -webkit-animation-delay: 2s;
     animation-delay: 2s;
@@ -271,7 +272,7 @@ header span:hover .detail{
 
 .triangle {
     bottom: 0;
-    left: 70%;
+    left: 75%;
     background: linear-gradient(45deg, #22A0F9 0%, #71FDC8 100%);
     -webkit-clip-path: polygon(0 0, 100% 100%, 100% 0);
     clip-path: polygon(0 0, 100% 100%, 100% 0);
@@ -287,28 +288,80 @@ header span:hover .detail{
 .square-round-three{
     bottom: 0;
     left: 0;
-    background: linear-gradient(45deg, #49E7C2 0%, #7AEC90 100%);
+    background: linear-gradient(45deg, rgb(45, 81, 240) 0%, rgb(122, 213, 236) 100%);
     border-radius: 50% 0 50% 50%;
+    -webkit-animation-delay: 1.5s;
+    animation-delay: 1.5s;
 }
+
 .square-round-three::after{
-    background: linear-gradient(-180deg, rgba(73, 231, 194, 0.4) 0%, rgba(28, 28, 28, 0) 100%);
+    background: linear-gradient(-180deg, rgba(118, 135, 231, 0.4) 0%, rgba(171, 190, 241, 0) 100%);
     will-change: transform;
 }
-.circle-spin-half {
-    width: 46px;
-    height: 46px;
+
+.square-round-one {
     bottom: 0;
-    left: 10%;
-    background: transparent;
-    border-color: linear-gradient(-180deg, rgba(73, 231, 194, 0.4) 0%, rgba(28, 28, 28, 0) 100%);
-    border-style: solid;
-    border-width: 20px;
-    border-radius: 50%;
+    left: 15%;
+    background: linear-gradient(45deg, rgb(231, 73, 170) 0%, rgb(217, 122, 236) 100%);
+    -webkit-border-top-left-radius: 50%;
+    border-top-left-radius: 50%;
+    -webkit-animation-delay: 2.5s;
+    animation-delay: 2.5s;
 }
-.circle-spin-half::after{
-    width: 86px;
-    left: -20px;
-    background: linear-gradient(-180deg, rgba(73, 231, 194, 0.4) 0%, rgba(28, 28, 28, 0) 100%);
+
+.square-round-one::after{
+    background: linear-gradient(-180deg, rgba(231, 73, 178, 0.4) 0%, rgba(228, 94, 240, 0) 100%);
+    will-change: transform;
+}
+
+.square-round-two {
+    bottom: 0;
+    left: 45%;
+    background: linear-gradient(45deg, rgba(110, 247, 18) 0%, green 100%) ;
+    border-top-left-radius: 50%;
+    -webkit-animation-delay: 3s;
+    animation-delay: 3s;
+}
+
+.square-round-two::after{
+    top: 100%;
+    background: linear-gradient(-180deg, rgba(110, 247, 18, 0.4) 0%, rgba(28, 28, 28, 0) 100%);
+    will-change: transform;
+}
+
+.heart {
+    width: 36px;
+    height: 60px;
+    background: #ff6666;
+    position: absolute;
+    bottom: 0;
+    left: 90%;
+    border-radius: 30px 30px 0 0;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+}
+
+.heart::before {
+    content: "";
+    width: 36px;
+    height: 60px;
+    background: #ff6666;
+    position: absolute;
+    top: 0;
+    left: 60px;
+    border-radius: 0 0 30px 30px;
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+}
+
+.heart::after{
+    width: 60px;
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(-180deg, rgba(255, 120, 120, 0.3) 0%, rgba(28, 28, 28, 0) 100%);
     will-change: transform;
 }
 
@@ -328,7 +381,7 @@ footer .list{
 }
 
 footer .list li{
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 footer .list a{
@@ -346,47 +399,6 @@ footer .list a{
 
 .green a{
     color: #00a546!important;
-}
-
-.drop{
-    position: absolute;
-    left: 20px;
-    /* top: 30px; */
-    transition: height 5s;
-    /* animation:drop 5s ease 0s 1 alternate forwards; */
-    animation-name: drop, whirl;
-    animation-duration: 5s, 1.5s;
-    animation-timing-function:ease, linear;
-    animation-iteration-count: 1, 3;
-    animation-fill-mode:forwards, none;
-    /* -webkit-animation:drop 5s ease-in-out 0s 1 alternate forwards; */
-}
-
-@keyframes drop{
-    from {
-        top: 0px;
-    }
-    to {
-        top:95%;
-    }
-}
-
-@-webkit-keyframes drop{
-    from {
-        top: 0px;
-    }
-    to {
-        top:95%;
-    }
-}
-
-@keyframes whirl{
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 @media only screen and (max-width: 500px){
