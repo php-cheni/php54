@@ -54,6 +54,16 @@ header {
     border-bottom: 2px cornflowerblue solid;
 }
 
+<<<<<<< HEAD
+header nav {
+    width: 100%;
+    max-width: 1436px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+=======
+>>>>>>> e8a0e24c840943ccb8ec88fa87304b95fb491676
 header .search {
     width: 35px;
     height: 35px;
@@ -110,7 +120,11 @@ header span:first-child a {
     color: cornflowerblue;
 }
 
+<<<<<<< HEAD
+header span:hover>a {
+=======
 header>span:hover>a {
+>>>>>>> e8a0e24c840943ccb8ec88fa87304b95fb491676
     color: pink;
 }
 

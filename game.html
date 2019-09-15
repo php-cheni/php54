@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>俄罗斯方块</title>
+    <style>
+        table {
+            width: 500px;
+            height: 900px;
+        }
+
+        .light {
+            background: linear-gradient(45deg, #EA9F45 0%, #F4EE51 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+</body>
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script>
+    var config = {
+        // 当前X轴起始位置（默认画布中心）
+        position: Math.floor($('tr:first').find('td').length/2),
+        // 上一次X轴起始位置（默认画布中心）
+        historyPosition: Math.floor($('tr:first').find('td').length / 2),
+        // 掉落速度
+        time: 200,
+        // 形状数组
+        shape: [['0:-1', '0:0', '0:1', '-1:0', 3], ['0:0', '-1:0', '-2:0', 1], ['0:-1', '0:0', '-1:0', 2]],
+        // 移动定时器容器
+        drop: [],
+        // 停止移动
+        stop: false,
+        // 最右位置
+        maxPosition: 3,
+        // 最左位置
+        minPosition: 1,
+    }
+
+    $('td').click(function () {
+        $(this).addClass('light');
+    });
+
+    $(document).keydown(function (event) {
+        switch (event.keyCode) {
+            case 13:
+                run();
+                break;
+            case 32:
+                clear();
+                break;
+            case 38:
+                console.log('上');
+                break;
+            case 40:
+                console.log('下');
+                break;
+            case 37:
+                config.position--
+                break;
+            case 39:
+                config.position++
+                break;
+            default:
+                console.log("按键：" + event.keyCode);
+        }
+    });
+
+    function run(){
+        var x = 0;
+        let currentShape= config.shape[Math.floor(Math.random()* config.shape.length)];
+        for (let i = 0; i < $('tr').length; i++) {
+            config.drop[i] = setTimeout(() => {
+                for (let s = 0; s < currentShape.length-1; s++) {
+                    let draw = currentShape[s].split(':');
+
+                    // 向下移动
+                    if ((x + parseInt(draw[0] - 1)) >= 0) {
+                        $('tr:eq(' + (x + parseInt(draw[0] - 1)) + ')').find('td:eq(' + (config.historyPosition + parseInt(draw[1])) + ')').removeClass('light');
+                    }
+
+                    // 消除上一步移动
+                    if ((x + parseInt(draw[0])) >= 0) {
+                        $('tr:eq(' + (x + parseInt(draw[0])) + ')').find('td:eq(' + (config.position + parseInt(draw[1])) + ')').addClass('light');
+                    }
+
+                    // 执行结束并初始化位置参数
+                    if (config.stop == true && s == (currentShape.length - 2)) {
+                        for (let d = 0; d < config.drop.length; d++) {
+                            clearTimeout(config.drop[d]);
+                        }
+                        clear();
+                        config.position = Math.floor($('tr:first').find('td').length / 2);
+                        config.stop = false;
+                        return;
+                    }
+
+                    // 开启结束
+                    if (s< currentShape[currentShape.length - 1] && $('tr:eq(' + (x + parseInt(draw[0] + 1)) + ')').find('td:eq(' + (config.position + parseInt(draw[1])) + ')').hasClass('light')) {
+                        config.stop=true;
+                    }
+                }
+
+                // 触底结束并初始化位置参数
+                if (x == $('tr').length - 1) {
+                    config.position = Math.floor($('tr:first').find('td').length / 2);
+                    clear();
+                    console.log('结束');
+                }
+
+                x++;
+
+                config.historyPosition = config.position;
+
+            }, i * config.time);
+        }
+    }
+
+    function clear() {
+        // 检查每一行
+        for (let i = 0; i < $('tr').length; i++) {
+            // 判断是否整行占满
+            if($('tr:eq(' + i + ')').find('.light').length == 5){
+                // 清除当前行
+                $('tr:eq(' + i + ')').find('td').removeClass('light');
+                // 遍历每一格向下移动
+                for (let d = i-1; d >= 0; d--) {
+                    for (let t = 0; t < $('tr:eq('+ d +')').find('td').length; t++) {
+                        // 判断是否点亮
+                        if ($('tr:eq(' + d + ')').find('td:eq(' + t + ')').hasClass('light')) {
+                            // 清除当前格子
+                            $('tr:eq(' + d + ')').find('td:eq(' + t + ')').removeClass('light');
+                            // Y轴向下移动
+                            $('tr:eq(' + (d + 1) + ')').find('td:eq(' + t + ')').addClass('light');
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($('tr:first').find('.light').length) {
+            setTimeout(() => {
+                alert('--GAME OVER--');
+            }, 200);
+        }
+    }
+</script>
+
+</html>
