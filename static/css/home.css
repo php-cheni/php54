@@ -54,35 +54,14 @@ header {
     border-bottom: 2px cornflowerblue solid;
 }
 
-<<<<<<< HEAD
 header nav {
     width: 100%;
     max-width: 1436px;
     margin: 0 auto;
-    background: #fff;
 }
 
-=======
->>>>>>> e8a0e24c840943ccb8ec88fa87304b95fb491676
 header .search {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 5px solid #000;
-    position: relative;
-    display: inline-block;
-}
 
-header .search::after {
-    width: 10px;
-    height: 30px;
-    content: "";
-    background: #000;
-    position: absolute;
-    top: 25px;
-    left: 40px;
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
 }
 
 header span {
@@ -106,6 +85,11 @@ header span a {
     text-decoration: none;
 }
 
+header span i {
+    font-size: 20px!important;
+    font-weight: bold;
+}
+
 header span:first-child {
     list-style: none;
     font-size: 25px;
@@ -120,11 +104,7 @@ header span:first-child a {
     color: cornflowerblue;
 }
 
-<<<<<<< HEAD
 header span:hover>a {
-=======
-header>span:hover>a {
->>>>>>> e8a0e24c840943ccb8ec88fa87304b95fb491676
     color: pink;
 }
 
@@ -144,6 +124,12 @@ header span:hover .detail {
     transition: all .5s ease;
     -webkit-transition: all .5s ease;
     box-sizing: border-box;
+}
+
+.detail ul {
+    width: 100%;
+    max-width: 1436px;
+    margin: 0 auto;
 }
 
 .detail ul li {
@@ -257,6 +243,7 @@ header span:hover .detail {
     -webkit-box-orient: vertical;
     overflow: hidden;
     -webkit-line-clamp: 1;
+    margin-bottom: 10px;
 }
 
 .slider .button {
@@ -595,13 +582,25 @@ header span:hover .detail {
 
 .contain {
     width: 100%;
+    max-width: 1436px;
+    margin: 0 auto;
     padding: 10px;
     box-sizing: border-box;
 }
 
+.contain .left {
+    width: 70%;
+    float: left;
+}
+
+.contain .right {
+    width: 30%;
+    float: left;
+}
+
 .article {
     position: relative;
-    width: 500px;
+    width: 450px;
     height: 110px;
     border-radius: 3px;
     padding: 20px;
@@ -610,6 +609,8 @@ header span:hover .detail {
     background-color: white;
     box-shadow: rgba(0, 0, 0, .117647) 0 1px 6px, rgba(0, 0, 0, .117647) 0 1px 4px;
     margin-bottom: 10px;
+    float: left;
+    margin-right: 5px;
 }
 
 .article:hover {
@@ -693,12 +694,13 @@ header span:hover .detail {
 }
 
 .general_image_pic .description {
-    font-size: 14px;
+    font-size: 13px;
     display: -webkit-box !important;
     -webkit-box-orient: vertical;
     overflow: hidden;
     -webkit-line-clamp: 4;
     color: dimgray;
+    word-break: break-all;
 }
 
 .php54-side-toolbar {
@@ -767,9 +769,13 @@ footer {
     min-height: 200px;
     padding: 10px;
     background-color: #2b2929;
-    font-family: Arial;
-    font-weight: 400;
     box-sizing: border-box;
+}
+
+footer .footer-content {
+    width: 100%;
+    max-width: 1436px;
+    margin: 0 auto;
 }
 
 footer .list {
@@ -780,14 +786,25 @@ footer .list {
 }
 
 footer .list li {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 footer .list a {
     color: #b7b7b7;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 1px;
     text-decoration: none;
+}
+
+footer .list a:hover {
+    color: white;
+}
+
+footer span {
+    padding-left: 40px;
+    color: #b7b7b7;
+    font-weight: 300;
+    letter-spacing: .5px;
 }
 
 .list-bottom {
@@ -796,19 +813,29 @@ footer .list a {
     height: 20px;
 }
 
-.green a {
-    color: #00a546!important;
+.footer-content ul:last-child a:nth-child(2n+3) {
+    color: cornflowerblue!important;
+    font-size: 16px!important;
 }
 
 @media only screen and (max-width: 720px) {
+    /* 轮播图原点 */
+    .slider-pagination {
+        display: none;
+    }
+
     .background {
         height: 200px;
     }
     .article {
         width: calc(100% - 40px);
     }
-    /* 轮播图原点 */
-    .slider-pagination {
-        display: none;
+
+    .contain .left {
+        width: 100%;
+    }
+
+    .contain .right {
+        width: 100%;
     }
 }
