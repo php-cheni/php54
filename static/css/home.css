@@ -580,6 +580,7 @@ header span:hover .detail {
     max-width: 1436px;
     margin: 10px auto;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .contain .left {
@@ -602,9 +603,8 @@ header span:hover .detail {
     font-size: medium;
     background-color: white;
     box-shadow: rgba(0, 0, 0, .117647) 0 1px 6px, rgba(0, 0, 0, .117647) 0 1px 4px;
-    margin-bottom: 10px;
     float: left;
-    margin-right: 5px;
+    margin: 5px 5px;
 }
 
 .article:hover {
@@ -764,6 +764,7 @@ footer {
     padding: 10px;
     background-color: #2b2929;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 footer .footer-content {
@@ -837,7 +838,7 @@ footer span {
         height: 200px;
     }
     .article {
-        width: calc(100% - 40px);
+        width: calc(100% - 50px);
     }
 
     .contain .left {
