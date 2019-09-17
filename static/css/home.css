@@ -60,10 +60,6 @@ header nav {
     margin: 0 auto;
 }
 
-header .search {
-
-}
-
 header span {
     list-style: none;
     width: auto;
@@ -189,8 +185,7 @@ header span:hover .detail {
     -webkit-flex-align: center;
     -webkit-align-items: center;
     align-items: center;
-    justify-content: center;
-    align-content: center;
+    justify-content: center;align-content: center;
     -webkit-transition: -webkit-transform 1600ms;
     transition: -webkit-transform 1600ms, transform 1600ms;
     -webkit-transform: scale(1);
@@ -583,8 +578,7 @@ header span:hover .detail {
 .contain {
     width: 100%;
     max-width: 1436px;
-    margin: 0 auto;
-    padding: 10px;
+    margin: 10px auto;
     box-sizing: border-box;
 }
 
@@ -782,11 +776,13 @@ footer .list {
     width: 30%;
     float: left;
     min-height: 200px;
-    padding-left: 40px;
 }
 
 footer .list li {
+    color: #b7b7b7;
+    font-size: 13px;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 footer .list a {
@@ -800,8 +796,11 @@ footer .list a:hover {
     color: white;
 }
 
+footer .list li:hover {
+    color: white;
+}
+
 footer span {
-    padding-left: 40px;
     color: #b7b7b7;
     font-weight: 300;
     letter-spacing: .5px;
@@ -813,7 +812,17 @@ footer span {
     height: 20px;
 }
 
-.footer-content ul:last-child a:nth-child(2n+3) {
+.footer-content div:last-of-type ul li:first-child {
+    color: #D4AF37!important;
+    font-size: 16px!important;
+}
+
+.footer-content div:last-of-type ul li:nth-child(2n+3) {
+    color: cornflowerblue!important;
+    font-size: 16px!important;
+}
+
+.footer-content div:last-of-type li a {
     color: cornflowerblue!important;
     font-size: 16px!important;
 }
@@ -837,5 +846,22 @@ footer span {
 
     .contain .right {
         width: 100%;
+    }
+
+    .footer-content div:nth-child(n+1):nth-child(-n+2) {
+        display: none;
+    }
+
+    .footer-content span {
+        display: none;
+    }
+
+    .footer-content div:last-of-type {
+        padding-left: 15px;
+        width: 100%;
+    }
+
+    .footer-content span {
+        padding-left: 15px;
     }
 }
