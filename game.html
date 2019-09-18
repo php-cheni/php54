@@ -9,11 +9,12 @@
     <style>
         table {
             width: 500px;
-            height: 900px;
+            height: 1000px;
         }
 
         .light {
-            background: linear-gradient(45deg, #EA9F45 0%, #F4EE51 100%);
+            /* background: linear-gradient(45deg, #EA9F45 0%, #F4EE51 100%); */
+            background-color: black;
         }
 
         button {
@@ -138,7 +139,7 @@
         time: 300,
         // 形状数组
         // shape: [[[0, 0, 0, -1], [-1, 0, 1, 0], 3], [[0, -1, -2], [0, 0, 0], 1], [[0, 0, -1,], [-1, 0, 0], 2]],
-        shape: [[[0, 0, 0, -1], [-1, 0, 1, 0], [0, -1, -1, -2], [0, 1, 0, 0], [0, 1, 0, 0], [-1, 0, 1, 0], [-1, 0, -1, -2], [-1, 0, 0, 0], 2, 3, 2, 3]],
+        shape: [[[0, 0, 0, -1], [-1, 0, 1, 0], [0, -1, -1, -2], [0, 1, 0, 0], [-1, 0, -1, -1], [-1, 0, 1, 0], [-1, 0, -1, -2], [-1, 0, 0, 0], 2, 3, 2, 3]],
         // 当前形状
         currentShape: 0,
         // 移动定时器容器
@@ -150,13 +151,13 @@
         // 最左位置
         minPosition: 0,
         // 旋转
-        whirl: 2,
+        whirl: 1,
     }
 
     $('td').click(function () {
         if ($(this).hasClass('light')) {
             $(this).removeClass('light');
-        }else{
+        } else {
             $(this).addClass('light');
         }
     });
@@ -171,10 +172,7 @@
                 break;
             case 38:
                 config.whirl < 4 ? config.whirl++ : config.whirl = 1;
-                // 左移动限制 （禁止超出）
-                config.maxPosition = Math.floor($('tr:first').find('td').length / 2) + (Math.floor($('tr:first').find('td').length / 2) - Math.max.apply(Math, config.currentShape[config.whirl * 2 - 1]));
-                // 右移动限制 （禁止超出）
-                config.minPosition = -Math.min.apply(Math, config.currentShape[config.whirl * 2 - 1]);
+                setPosition();
                 console.log('旋转方向：' + config.whirl);
                 break;
             case 40:
@@ -197,35 +195,25 @@
 
     function run() {
         let line = 0;
-        let whirl = config.whirl * 2 - 2;
+        // let whirl = config.whirl * 2 - 2;
         // 随机形状
         config.currentShape = config.shape[Math.floor(Math.random() * config.shape.length)];
-        // 左移动限制 （禁止超出）
-        config.maxPosition = Math.floor($('tr:first').find('td').length / 2) + (Math.floor($('tr:first').find('td').length / 2) - Math.max.apply(Math, config.currentShape[config.whirl * 2 - 1]));
-        // 右移动限制 （禁止超出）
-        config.minPosition = -Math.min.apply(Math, config.currentShape[config.whirl * 2 - 1]);
+        setPosition();
 
         for (let i = 0; i < $('tr').length; i++) {
             config.drop[i] = setTimeout(() => {
+                let whirl = config.whirl * 2 - 2;
+                
                 for (let s = 0; s < config.currentShape[0].length; s++) {
                     // 消除上一步移动
                     if ((line + config.currentShape[whirl][s] - 1) >= 0) {
                         $('tr:eq(' + (line + config.currentShape[whirl][s] - 1) + ')').find('td:eq(' + (config.historyPosition + config.currentShape[whirl + 1][s]) + ')').removeClass('light');
                     }
 
-                    // 消除上一步后，更新方向
-                    if (s == (config.currentShape[0].length - 1)) {
-                        whirl = config.whirl * 2 - 2;
-                        // console.log(config.currentShape[config.currentShape.length - (whirl + 2) / 2]);
-                    }
-
                     // 向下移动
                     if ((line + config.currentShape[whirl][s]) >= 0) {
-                        console.log('绘制:'+ config.currentShape[whirl + 1][s]);
                         $('tr:eq(' + (line + config.currentShape[whirl][s]) + ')').find('td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').addClass('light');
                     }
-                    
-
 
                     // 执行结束并初始化位置参数
                     if (config.stop == true && s == (config.currentShape[0].length - 1)) {
@@ -240,7 +228,7 @@
                     }
 
                     // 碰撞开启结束开关
-                    if (s < config.currentShape[config.currentShape.length - config.whirl] && $('tr:eq(' + (line + config.currentShape[whirl][s] + 1) + ')').find('td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').hasClass('light')) {
+                    if (s < config.currentShape[config.currentShape.length - (whirl + 2) / 2] && $('tr:eq(' + (line + config.currentShape[whirl][s] + 1) + ')').find('td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').hasClass('light')) {
                         config.stop = true;
                         console.log('触碰');
                     }
@@ -255,9 +243,16 @@
                 line++;
                 // 保存历史位置（用于清除上一步）
                 config.historyPosition = config.position;
-
+                console.log('-----');
             }, i * config.time);
         }
+    }
+
+    function setPosition(){
+        // 左移动限制 （禁止超出）
+        config.maxPosition = Math.floor($('tr:first').find('td').length / 2) + (Math.floor($('tr:first').find('td').length / 2) - Math.max.apply(Math, config.currentShape[config.whirl * 2 - 1]));
+        // 右移动限制 （禁止超出）
+        config.minPosition = -Math.min.apply(Math, config.currentShape[config.whirl * 2 - 1]);
     }
 
     function clear() {
