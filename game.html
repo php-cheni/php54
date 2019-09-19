@@ -10,11 +10,20 @@
         table {
             width: 500px;
             height: 1000px;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-top: 1px red solid;
+            border-left: 1px red solid;
+        }
+
+        td {
+            border-right: 1px red solid;
+            border-bottom: 1px red solid;
         }
 
         .light {
-            /* background: linear-gradient(45deg, #EA9F45 0%, #F4EE51 100%); */
-            background-color: black;
+            background: linear-gradient(45deg, #EA9F45 0%, #F4EE51 100%);
+            /* background-color: black; */
         }
 
         button {
@@ -52,7 +61,7 @@
 </head>
 
 <body>
-    <table border="1">
+    <table>
         <tr>
             <td></td>
             <td></td>
@@ -136,10 +145,13 @@
         // 上一次X轴起始位置（默认画布中心）
         historyPosition: Math.floor($('tr:first').find('td').length / 2),
         // 掉落速度
-        time: 300,
+        time: 600,
         // 形状数组
-        // shape: [[[0, 0, 0, -1], [-1, 0, 1, 0], 3], [[0, -1, -2], [0, 0, 0], 1], [[0, 0, -1,], [-1, 0, 0], 2]],
-        shape: [[[0, 0, 0, -1], [-1, 0, 1, 0], [0, -1, -1, -2], [0, 1, 0, 0], [-1, 0, -1, -1], [-1, 0, 1, 0], [-1, 0, -1, -2], [-1, 0, 0, 0], 2, 3, 2, 3]],
+        shape: [
+            [[0, 0, 0, -1], [-1, 0, 1, 0], [0, -1, -1, -2], [0, 1, 0, 0], [-1, 0, -1, -1], [-1, 0, 1, 0], [-1, 0, -1, -2], [-1, 0, 0, 0], 2, 3, 2, 3],
+            [[0, 0, -1, -1], [0, 1, 0, 1], [0, 0, -1, -1], [0, 1, 0, 1], [0, 0, -1, -1], [0, 1, 0, 1], [0, 0, -1, -1], [0, 1, 0, 1], 2, 2, 2, 2],
+            [[0, -1, -2], [0, 0, 0], [0, 0, 0], [-1, 0, 1], [0, -1, -2], [0, 0, 0], [0, 0, 0], [-1, 0, 1], 3, 1, 3, 1],
+        ],
         // 当前形状
         currentShape: 0,
         // 移动定时器容器
@@ -154,6 +166,8 @@
         whirl: 1,
         //  旋转
         historyWhirl: 0,
+        // 行
+        line: 0,
     }
 
     $('td').click(function () {
@@ -178,16 +192,23 @@
                 console.log('旋转方向：' + config.whirl);
                 break;
             case 40:
+                for (let d = 0; d < config.drop.length; d++) {
+                    clearTimeout(config.drop[d]);
+                }
+                run(config.line);
+                audioplay('/static/audio/xiu.mp3');
                 console.log('加速掉落');
                 break;
             case 37:
                 // 向左移动
                 console.log('向左移动');
+                audioplay('/static/audio/bu.mp3');
                 config.position > config.minPosition ? config.position-- : config.position;
                 break;
             case 39:
                 // 向右移动
                 console.log('向右移动');
+                audioplay('/static/audio/bu.mp3');
                 config.position < config.maxPosition ? config.position++ : config.position;
                 break;
             default:
@@ -195,20 +216,19 @@
         }
     });
 
-    function run() {
-        let line = 0;
+    function run(line = 0) {
         // 初始化方向
         let whirl = config.whirl * 2 - 2;
-        
+
         // 随机形状
-        config.currentShape = config.shape[Math.floor(Math.random() * config.shape.length)];
+        config.currentShape = line ? config.currentShape : config.shape[Math.floor(Math.random() * config.shape.length)];
         setPosition();
 
-        for (let i = 0; i < $('tr').length; i++) {
+        for (let i = line; i < $('tr').length; i++) {
             config.drop[i] = setTimeout(() => {
                 // 更新方向
                 whirl = config.whirl * 2 - 2;
-                
+
                 for (let s = 0; s < config.currentShape[0].length; s++) {
                     // 消除上一步移动
                     if ((line + config.currentShape[config.historyWhirl][s] - 1) >= 0) {
@@ -241,9 +261,11 @@
 
                 // 下一行
                 line++;
+                config.line = line;
 
                 // 触底结束并初始化位置参数
                 if (line == $('tr').length) {
+                    console.log('触底');
                     config.position = Math.floor($('tr:first').find('td').length / 2);
                     clear() ? run() : console.log('--GAME OVER--');
                 }
@@ -251,12 +273,12 @@
                 // 保存历史位置（用于清除上一步）
                 config.historyPosition = config.position;
                 config.historyWhirl = whirl;
-                console.log('-----');
-            }, i * config.time);
+
+            }, line ? (i - line) * 50 : i * config.time);
         }
     }
 
-    function setPosition(){
+    function setPosition() {
         // 左移动限制 （禁止超出）
         config.maxPosition = Math.floor($('tr:first').find('td').length / 2) + (Math.floor($('tr:first').find('td').length / 2) - Math.max.apply(Math, config.currentShape[config.whirl * 2 - 1]));
         // 右移动限制 （禁止超出）
@@ -267,7 +289,7 @@
         // 检查每一行
         for (let i = 0; i < $('tr').length; i++) {
             // 判断是否整行占满
-            if ($('tr:eq(' + i + ')').find('.light').length == 5) {
+            if ($('tr:eq(' + i + ')').find('.light').length == $('tr:first').find('td').length) {
                 $('input').val(parseInt($('input').val()) + 1);
                 // 清除当前行
                 $('tr:eq(' + i + ')').find('td').removeClass('light');
@@ -287,14 +309,73 @@
         }
 
         if ($('tr:first').find('.light').length) {
+            $('td').removeClass('light');
+
+            // for (let i = $('tr').length; i >= 0; i--) {
+            //     let time = 0;
+            //     if (i % 2) {
+            //         for (let d = 0; d < $('tr:first td').length; d++) {
+            //             setTimeout(() => {
+            //                 $('tr:eq(' + i + ')').find('td:eq(' + d + ')').addClass('light');
+            //             }, time * 100);
+            //             setTimeout(() => {
+            //                 setTimeout(() => {
+            //                     $('tr:eq(' + i + ')').find('td:eq(' + d + ')').removeClass('light');
+            //                 }, time * 100);
+            //             }, $('tr:first td').length * 100);
+            //             time++
+            //         }
+            //     } else {
+            //         for (let d = $('tr:first td').length; d > 0; d--) {
+            //             setTimeout(() => {
+            //                 $('tr:eq(' + i + ')').find('td:eq(' + (d - 1) + ')').addClass('light');
+            //             }, time * 100);
+            //             setTimeout(() => {
+            //                 setTimeout(() => {
+            //                     $('tr:eq(' + i + ')').find('td:eq(' + (d - 1) + ')').removeClass('light');
+            //                 }, time * 100);
+            //             }, $('tr:first td').length * 100);
+            //             time++
+            //         }
+            //     }
+            // }
+
+            let time = 0;
+            for (let i = $('tr').length; i > 0; i--) {
+                for (let d = $('tr:first td').length; d > 0; d--) {
+                    setTimeout(() => {
+                        $('tr:eq(' + (i - 1) + ')').find('td:eq(' + (d - 1) + ')').addClass('light');
+                    }, time * 50);
+                    time++;
+                }
+            }
+
             setTimeout(() => {
-                alert('--GAME OVER--');
-                // location.reload();
-            }, 200);
+                time = 0;
+                for (let i = 0; i < $('tr').length; i++) {
+                    for (let d = 0; d < $('tr:first td').length; d++) {
+                        setTimeout(() => {
+                            $('tr:eq(' + i + ')').find('td:eq(' + d + ')').removeClass('light');
+                        }, time * 50);
+                        time++;
+                    }
+                }
+            }, $('tr').length * $('tr:first td').length * 50);
+
             return false;
         }
-
         return true;
+    }
+
+    function audioplay(url, volume = 1, loop = false) {
+        var audio = document.createElement('audio');
+        var source = document.createElement('source');
+        source.type = "audio/mpeg";
+        source.src = url;
+        source.loop = loop;
+        source.autoplay = "autoplay";
+        audio.appendChild(source);
+        audio.play();
     }
 </script>
 
