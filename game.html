@@ -152,6 +152,8 @@
         minPosition: 0,
         // 旋转
         whirl: 1,
+        //  旋转
+        historyWhirl: 0,
     }
 
     $('td').click(function () {
@@ -195,19 +197,22 @@
 
     function run() {
         let line = 0;
-        // let whirl = config.whirl * 2 - 2;
+        // 初始化方向
+        let whirl = config.whirl * 2 - 2;
+        
         // 随机形状
         config.currentShape = config.shape[Math.floor(Math.random() * config.shape.length)];
         setPosition();
 
         for (let i = 0; i < $('tr').length; i++) {
             config.drop[i] = setTimeout(() => {
-                let whirl = config.whirl * 2 - 2;
+                // 更新方向
+                whirl = config.whirl * 2 - 2;
                 
                 for (let s = 0; s < config.currentShape[0].length; s++) {
                     // 消除上一步移动
-                    if ((line + config.currentShape[whirl][s] - 1) >= 0) {
-                        $('tr:eq(' + (line + config.currentShape[whirl][s] - 1) + ')').find('td:eq(' + (config.historyPosition + config.currentShape[whirl + 1][s]) + ')').removeClass('light');
+                    if ((line + config.currentShape[config.historyWhirl][s] - 1) >= 0) {
+                        $('tr:eq(' + (line + config.currentShape[config.historyWhirl][s] - 1) + ')').find('td:eq(' + (config.historyPosition + config.currentShape[config.historyWhirl + 1][s]) + ')').removeClass('light');
                     }
 
                     // 向下移动
@@ -234,15 +239,18 @@
                     }
                 }
 
+                // 下一行
+                line++;
+
                 // 触底结束并初始化位置参数
-                if (line == $('tr').length - 1) {
+                if (line == $('tr').length) {
                     config.position = Math.floor($('tr:first').find('td').length / 2);
                     clear() ? run() : console.log('--GAME OVER--');
                 }
-                // 下一行
-                line++;
+
                 // 保存历史位置（用于清除上一步）
                 config.historyPosition = config.position;
+                config.historyWhirl = whirl;
                 console.log('-----');
             }, i * config.time);
         }
