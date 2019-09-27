@@ -184,10 +184,13 @@
                 run();
                 break;
             case 32:
-                clear();
+                for (let d = 0; d < config.drop.length; d++) {
+                    clearTimeout(config.drop[d]);
+                }
                 break;
             case 38:
                 config.whirl < 4 ? config.whirl++ : config.whirl = 1;
+                turn();
                 setPosition();
                 console.log('旋转方向：' + config.whirl);
                 break;
@@ -196,19 +199,21 @@
                     clearTimeout(config.drop[d]);
                 }
                 run(config.line);
-                audioplay('/static/audio/xiu.mp3');
+                // audioplay('/static/audio/xiu.mp3');
                 console.log('加速掉落');
                 break;
             case 37:
                 // 向左移动
                 console.log('向左移动');
-                audioplay('/static/audio/bu.mp3');
+                move();
+                // audioplay('/static/audio/bu.mp3');
                 config.position > config.minPosition ? config.position-- : config.position;
                 break;
             case 39:
                 // 向右移动
                 console.log('向右移动');
-                audioplay('/static/audio/bu.mp3');
+                move();
+                // audioplay('/static/audio/bu.mp3');
                 config.position < config.maxPosition ? config.position++ : config.position;
                 break;
             default:
@@ -232,12 +237,12 @@
                 for (let s = 0; s < config.currentShape[0].length; s++) {
                     // 消除上一步移动
                     if ((line + config.currentShape[config.historyWhirl][s] - 1) >= 0) {
-                        $('tr:eq(' + (line + config.currentShape[config.historyWhirl][s] - 1) + ')').find('td:eq(' + (config.historyPosition + config.currentShape[config.historyWhirl + 1][s]) + ')').removeClass('light');
+                        $('tr:eq(' + (line + config.currentShape[config.historyWhirl][s] - 1) + ') td:eq(' + (config.historyPosition + config.currentShape[config.historyWhirl + 1][s]) + ')').removeClass('light');
                     }
 
                     // 向下移动
                     if ((line + config.currentShape[whirl][s]) >= 0) {
-                        $('tr:eq(' + (line + config.currentShape[whirl][s]) + ')').find('td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').addClass('light');
+                        $('tr:eq(' + (line + config.currentShape[whirl][s]) + ') td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').addClass('light');
                     }
 
                     // 执行结束并初始化位置参数
@@ -253,7 +258,7 @@
                     }
 
                     // 碰撞开启结束开关
-                    if (s < config.currentShape[config.currentShape.length - (whirl + 2) / 2] && $('tr:eq(' + (line + config.currentShape[whirl][s] + 1) + ')').find('td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').hasClass('light')) {
+                    if (s < config.currentShape[config.currentShape.length - (whirl + 2) / 2] && $('tr:eq(' + (line + config.currentShape[whirl][s] + 1) + ') td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').hasClass('light')) {
                         config.stop = true;
                         console.log('触碰');
                     }
@@ -278,6 +283,42 @@
         }
     }
 
+    function turn() {
+        let line = config.line;
+        let whirl = config.whirl*2-2;
+        console.log('旋转：' + whirl);
+        for (let s = 0; s < config.currentShape[0].length; s++) {
+            // 消除上一步移动
+            if ((line + config.currentShape[config.historyWhirl][s] - 1) >= 0) {
+                $('tr:eq(' + (line + config.currentShape[config.historyWhirl][s]) + ') td:eq(' + (config.historyPosition + config.currentShape[config.historyWhirl + 1][s]) + ')').removeClass('light');
+            }
+
+            // 向下移动
+            if ((line + config.currentShape[whirl][s]) >= 0) {
+                $('tr:eq(' + (line + config.currentShape[whirl][s] - 1) + ') td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').addClass('light');
+            }
+        }
+        config.historyWhirl = whirl;
+    }
+
+    function move() {
+        let line = config.line;
+        let whirl = config.whirl*2-2;
+        console.log('移动：' + line);
+        for (let s = 0; s < config.currentShape[0].length; s++) {
+            // 消除上一步移动
+            if ((line + config.currentShape[config.historyWhirl][s] - 1) >= 0) {
+                $('tr:eq(' + (line + config.currentShape[config.historyWhirl][s]) + ') td:eq(' + (config.historyPosition + config.currentShape[config.historyWhirl + 1][s]) + ')').removeClass('light');
+            }
+
+            // 向下移动
+            if ((line + config.currentShape[whirl][s]) >= 0) {
+                $('tr:eq(' + (line + config.currentShape[whirl][s] - 1) + ') td:eq(' + (config.position + config.currentShape[whirl + 1][s]) + ')').addClass('light');
+            }
+        }
+        config.historyPosition = config.position;
+    }
+
     function setPosition() {
         // 左移动限制 （禁止超出）
         config.maxPosition = Math.floor($('tr:first').find('td').length / 2) + (Math.floor($('tr:first').find('td').length / 2) - Math.max.apply(Math, config.currentShape[config.whirl * 2 - 1]));
@@ -297,11 +338,11 @@
                 for (let d = i - 1; d >= 0; d--) {
                     for (let t = 0; t < $('tr:eq(' + d + ')').find('td').length; t++) {
                         // 判断是否点亮
-                        if ($('tr:eq(' + d + ')').find('td:eq(' + t + ')').hasClass('light')) {
+                        if ($('tr:eq(' + d + ') td:eq(' + t + ')').hasClass('light')) {
                             // 清除当前格子
-                            $('tr:eq(' + d + ')').find('td:eq(' + t + ')').removeClass('light');
+                            $('tr:eq(' + d + ') td:eq(' + t + ')').removeClass('light');
                             // Y轴向下移动
-                            $('tr:eq(' + (d + 1) + ')').find('td:eq(' + t + ')').addClass('light');
+                            $('tr:eq(' + (d + 1) + ') td:eq(' + t + ')').addClass('light');
                         }
                     }
                 }
@@ -316,11 +357,11 @@
             //     if (i % 2) {
             //         for (let d = 0; d < $('tr:first td').length; d++) {
             //             setTimeout(() => {
-            //                 $('tr:eq(' + i + ')').find('td:eq(' + d + ')').addClass('light');
+            //                 $('tr:eq(' + i + ') td:eq(' + d + ')').addClass('light');
             //             }, time * 100);
             //             setTimeout(() => {
             //                 setTimeout(() => {
-            //                     $('tr:eq(' + i + ')').find('td:eq(' + d + ')').removeClass('light');
+            //                     $('tr:eq(' + i + ') td:eq(' + d + ')').removeClass('light');
             //                 }, time * 100);
             //             }, $('tr:first td').length * 100);
             //             time++
@@ -328,11 +369,11 @@
             //     } else {
             //         for (let d = $('tr:first td').length; d > 0; d--) {
             //             setTimeout(() => {
-            //                 $('tr:eq(' + i + ')').find('td:eq(' + (d - 1) + ')').addClass('light');
+            //                 $('tr:eq(' + i + ') td:eq(' + (d - 1) + ')').addClass('light');
             //             }, time * 100);
             //             setTimeout(() => {
             //                 setTimeout(() => {
-            //                     $('tr:eq(' + i + ')').find('td:eq(' + (d - 1) + ')').removeClass('light');
+            //                     $('tr:eq(' + i + ') td:eq(' + (d - 1) + ')').removeClass('light');
             //                 }, time * 100);
             //             }, $('tr:first td').length * 100);
             //             time++
@@ -341,26 +382,67 @@
             // }
 
             let time = 0;
-            for (let i = $('tr').length; i > 0; i--) {
-                for (let d = $('tr:first td').length; d > 0; d--) {
-                    setTimeout(() => {
-                        $('tr:eq(' + (i - 1) + ')').find('td:eq(' + (d - 1) + ')').addClass('light');
-                    }, time * 50);
-                    time++;
+            for (let i = $('tr').length - 1; i >= 0; i--) {
+                if (i % 2) {
+                    for (let d = $('tr:first td').length; d > 0; d--) {
+                        setTimeout(() => {
+                            $('tr:eq(' + i + ') td:eq(' + (d - 1) + ')').addClass('light');
+                        }, time * 30);
+                        time++;
+                    }
+                } else {
+                    for (let d = 0; d < $('tr:first td').length; d++) {
+                        setTimeout(() => {
+                            $('tr:eq(' + i + ') td:eq(' + d + ')').addClass('light');
+                        }, time * 30);
+                        time++;
+                    }
                 }
             }
 
             setTimeout(() => {
                 time = 0;
                 for (let i = 0; i < $('tr').length; i++) {
-                    for (let d = 0; d < $('tr:first td').length; d++) {
-                        setTimeout(() => {
-                            $('tr:eq(' + i + ')').find('td:eq(' + d + ')').removeClass('light');
-                        }, time * 50);
-                        time++;
+                    if (i % 2) {
+                        for (let d = 0; d < $('tr:first td').length; d++) {
+                            setTimeout(() => {
+                                $('tr:eq(' + i + ') td:eq(' + d + ')').removeClass('light');
+                            }, time * 30);
+                            time++;
+                        }
+                    } else {
+                        for (let d = $('tr:first td').length; d > 0; d--) {
+                            setTimeout(() => {
+                                $('tr:eq(' + i + ') td:eq(' + (d - 1) + ')').removeClass('light');
+                            }, time * 30);
+                            time++;
+                        }
                     }
                 }
-            }, $('tr').length * $('tr:first td').length * 50);
+            }, $('tr').length * $('tr:first td').length * 30);
+
+            // for (let i = $('tr').length; i >= 0; i--) {
+            //     let time = 0;
+            //     if (i % 2) {
+            //         for (let d = 0; d < $('tr:first td').length; d++) {
+            //             if (d % 2 == false) {
+            //                 setTimeout(() => {
+            //                     $('tr:eq(' + i + ') td:eq(' + d + ')').addClass('light');
+            //                 }, time * 1000);
+            //                 time++
+            //             }
+            //         }
+            //     } else {
+            //         for (let d = $('tr:first td').length; d > 0; d--) {
+            //             if (d % 2 == false) {
+            //                 setTimeout(() => {
+            //                     $('tr:eq(' + i + ') td:eq(' + (d - 1) + ')').addClass('light');
+            //                 }, time * 1000);
+            //                 time++
+            //             }
+            //         }
+            //     }
+            // }
 
             return false;
         }
